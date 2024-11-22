@@ -8,7 +8,6 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import pandas_udf
 import pandas as pd
 
-
 def ComputeDistanceWithSpark(pair):
     spark = SparkSession.builder.appName("Edit-Distance").getOrCreate()
     dataFrame = spark.createDataFrame(pair,["str1", "str2"])
@@ -75,4 +74,3 @@ if __name__=="__main__":
     time3 = end_time - start_time
     print(f"Time taken (for-loop): {end_time - start_time:.3f} seconds")
     print(f"Time cost (Spark, multi-process, for-loop): [{time1:.3f}, {time2:.3f}, {time3:.3f}]")
-
