@@ -1,4 +1,3 @@
-import os
 from itertools import combinations
 import pandas as pd
 import multiprocessing
@@ -12,14 +11,13 @@ import pandas as pd
 
 def ComputeDistanceWithSpark(pair):
     spark = SparkSession.builder.appName("Edit-Distance").getOrCreate()
-    dataFrame = spark.createDataFrame(pair, schema=["str1", "str2"])
+    dataFrame = spark.createDataFrame(pair,["str1", "str2"])
     @pandas_udf("int")
-    def editUDFDistance(str1, str2):
+    def editUDFDistance(str1: pd.Series, str2: pd.Series) -> pd.Series:
         return pd.Series([edit_distance((s1, s2)) for s1, s2 in zip(str1, str2)])
-    distances = dataFrame.withColumn("distance", editUDFDistance("str1", "str2"))
-    result = distances.collect()
+    _ = dataFrame.withColumn("distances", editUDFDistance(dataFrame["str1"], dataFrame["str2"]))
     spark.stop()
-    return result
+    return
 
 def edit_distance(pair):
     str1, str2 = pair
@@ -41,15 +39,12 @@ def edit_distance(pair):
 
     return dp[m][n]
 
-
 def compute_edit_distance_multiprocess(pair, num_workers):
     with multiprocessing.Pool(num_workers) as pool:
         distances = list(tqdm(pool.imap(edit_distance, pair), total=len(pair), ncols=100))
     return distances
 
-
 if __name__=="__main__":
-
     parser = argparse.ArgumentParser(description="Edit Distance with PySpark")
     parser.add_argument('--csv_dir', type=str, default='simple-wiki-unique-has-end-punct-sentences.csv', help="Directory of csv file")
     parser.add_argument('--num_sentences', type=int, default=300, help="Number of sentences")
@@ -61,7 +56,7 @@ if __name__=="__main__":
     pair_data = list(combinations(text_data, 2))
     # Spark
     start_time = time.time()
-    # _ = ComputeDistanceWithSpark(pair_data)
+    _ = ComputeDistanceWithSpark(pair_data)
     end_time = time.time()
     time1 = end_time - start_time
     print(f"Time taken (Spark): {end_time - start_time:.2f} seconds")
@@ -79,5 +74,5 @@ if __name__=="__main__":
     end_time = time.time()
     time3 = end_time - start_time
     print(f"Time taken (for-loop): {end_time - start_time:.3f} seconds")
-
     print(f"Time cost (Spark, multi-process, for-loop): [{time1:.3f}, {time2:.3f}, {time3:.3f}]")
+
