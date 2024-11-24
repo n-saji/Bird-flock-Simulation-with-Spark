@@ -29,7 +29,6 @@ def limit_speed(velocity, min_speed, max_speed):
         
     return velocity
 
-
 # Update the lead bird's position following a figure-eight (infinity) trajectory
 def update_lead_bird_position(t):
     
@@ -80,11 +79,9 @@ def update_positions(positions):
 
     return positions
 
-def process_frame(frame, time_step, num_birds, std_dev_position, lead_bird_radius):
+def process_frame(frame, time_step,positions):
         try:
             start = time.time()
-            positions = np.random.normal(loc=np.array([0, 0, 1.5*lead_bird_radius]), scale=std_dev_position, size=(num_birds, 3))
-            
             # Update lead bird position and broadcast it
             positions[0] = update_lead_bird_position(frame * time_step)
 
@@ -98,6 +95,7 @@ def process_frame(frame, time_step, num_birds, std_dev_position, lead_bird_radiu
 
             print(f'frame simulation time: {frame_cost:.4f}s')
             return positions
+        
         except Exception as e:
             print(f"Error processing frame {frame}: {e}")
             return None
@@ -106,9 +104,7 @@ if __name__=="__main__":
     # Simulation parameters
     num_birds = 1000
     num_frames = 500
-
     time_step = 1 / 4
-
     std_dev_position = 10.0
     lead_bird_speed = 20.0
     lead_bird_radius = 300.0
@@ -116,30 +112,24 @@ if __name__=="__main__":
     max_speed = 30.0
     max_distance = 20.0
     min_distance = 10.0
-
-
+    positions = np.random.normal(loc=np.array([0, 0, 1.5*lead_bird_radius]), scale=std_dev_position, size=(num_birds, 3))
     velocities = np.zeros((num_birds, 3))
-
-
     simulation = []
 
     spark = SparkSession.builder.appName("BirdSimulation").getOrCreate()
     broadcast_params = {
         "time_step": time_step,
-        "num_birds": num_birds,
-        "std_dev_position": std_dev_position,
-        "lead_bird_radius": lead_bird_radius,
+        "positions": positions,
     }
     b_params = spark.sparkContext.broadcast(broadcast_params)
     frames = list(range(num_frames))
     rdd = spark.sparkContext.parallelize(frames)
     start_time = time.time()
+
     simulation_with_costs = rdd.map(lambda frame: process_frame(
         frame,
         b_params.value["time_step"],
-        b_params.value["num_birds"],
-        b_params.value["std_dev_position"],
-        b_params.value["lead_bird_radius"],
+        b_params.value["positions"],
     )).collect()
     end_time = time.time()
 
@@ -158,6 +148,7 @@ if __name__=="__main__":
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(111, projection='3d')
 
+    # print(simulation)
     # save all frame 
     visualize_simulation(simulation, lead_bird_radius)
 

@@ -34,7 +34,7 @@ def create_mp4_from_images(folder_path, output_video="output.mp4", fps=10, resiz
         img = Image.open(img_path)
         
         # Resize each frame based on the resize_factor
-        img = img.resize((width, height), Image.Resampling.LANCZOS)
+        img = img.resize((width, height), Image.LANCZOS)
         
         # Convert PIL image to a format compatible with OpenCV
         frame = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
@@ -57,7 +57,7 @@ def create_compressed_gif(folder_path, gif_name="output.gif", duration=100, loop
         img = Image.open(img_path)
         
         # Resize each frame based on the resize_factor
-        img = img.resize((int(img.width * resize_factor), int(img.height * resize_factor)), Image.Resampling.LANCZOS)
+        img = img.resize((int(img.width * resize_factor), int(img.height * resize_factor)), Image.LANCZOS)
         
         # Optionally reduce colors (to 128 colors)
         img = img.convert("P", palette=Image.ADAPTIVE, colors=128) if optimize else img.convert("RGB")
@@ -107,7 +107,7 @@ def visualize_simulation(simulation, lead_bird_radius):
         ax.set_xlim([-1.5 * lead_bird_radius, 1.5 * lead_bird_radius])
         ax.set_ylim([-1.5 * lead_bird_radius, 1.5 * lead_bird_radius])
         ax.set_zlim([0, 3 * lead_bird_radius])
-        ax.set_title(f"3D Bird Flock Simulation - Frame {i}", fontsize=16, color='darkblue', pad=10)
+        ax.set_title(f"3D Bird Flock Simulation - Frame {i+1}", fontsize=16, color='darkblue', pad=10)
 
         # Plot the lead bird with a unique color and marker
         ax.scatter(positions[0, 0], positions[0, 1], positions[0, 2], 
@@ -126,12 +126,12 @@ def visualize_simulation(simulation, lead_bird_radius):
         # Save each frame
         plt.draw()
         plt.tight_layout()
-        plt.savefig(f'plot/frame_{i:04d}.png', facecolor=fig.get_facecolor())
+        plt.savefig(f'./plot/frame_{i:04d}.png', facecolor=fig.get_facecolor())
 
 
 if __name__ == "__main__":
 
-    lead_bird_radius = 200.0
+    # lead_bird_radius = 200.0
     # simulation = pk.load(open('simulation.pk', 'rb'))
     # simulation = simulation[:500]
 
@@ -142,6 +142,6 @@ if __name__ == "__main__":
     # visualize_simulation(simulation, lead_bird_radius)
 
     # Usage example
-    create_compressed_gif("plot", gif_name="bird_simulation.gif", duration=100, loop=1, resize_factor=0.3)
+    create_compressed_gif("./plot", gif_name="bird_simulation.gif", duration=100, loop=1, resize_factor=0.3)
 
     # create_mp4_from_images("./plot", output_video="bird_simulation.mp4", resize_factor=0.7)
