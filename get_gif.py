@@ -72,7 +72,7 @@ def create_compressed_gif(folder_path, gif_name="output.gif", duration=100, loop
         duration=duration,
         loop=loop,
         optimize=optimize,
-        disposal=2  # Clear each frame after display to reduce flicker
+        disposal=5  # Clear each frame after display to reduce flicker
     )
     print(f"Compressed GIF created and saved as {gif_name}")
 
