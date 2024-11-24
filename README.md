@@ -77,15 +77,3 @@ print(f'Average time cost per frame: {mean_time:.4f}')
 
 ---
 
-## 4. Submission Format:
-You are expected to submit a zip file, called `<UBIT_Name>.zip`, in UBLearn consists all your code, a gif image for task 1.3, and your report in pdf in your zip file. The zip file should be organized as following:
-```
-<UBIT_Name>
---<UBIT_Name>.pdf
---edit_dist.py
---MLP.py
---bird_spark.py
---bird_simulation.gif
-```
-
----
