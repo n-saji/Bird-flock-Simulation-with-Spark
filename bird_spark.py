@@ -2,11 +2,10 @@ import os
 os.system('clear')
 import numpy as np
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 import time
-import pickle as pk
 from get_gif import *
 from pyspark.sql import SparkSession
+import argparse
 
 
 # Function to compute the speed of a bird
@@ -102,7 +101,10 @@ def process_frame(frame, time_step,positions):
 
 if __name__=="__main__":
     # Simulation parameters
-    num_birds = 1000
+    parser = argparse.ArgumentParser(description="Edit Distance with PySpark")
+    parser.add_argument('--num_birds', type=int, default=10000, help="Number of birds")
+    args = parser.parse_args()
+    num_birds = args.num_birds
     num_frames = 500
     time_step = 1 / 4
     std_dev_position = 10.0
