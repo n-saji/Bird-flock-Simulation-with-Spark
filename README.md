@@ -89,13 +89,3 @@ You are expected to submit a zip file, called `<UBIT_Name>.zip`, in UBLearn cons
 ```
 
 ---
-
-## 5. Scoring
-
-The score will be assigned as follows:
-
-- **Task 1.1**: Successful code execution – 10 points (must print reasonable time cost in required format).
-- **Task 1.2**: Successful code execution – 10 points (must print reasonable time cost in required format).
-- **Task 2**: Successful code execution – 20 points (must print reasonable time cost in required format and generate a meaningful GIF image).
-- **Report Quality**: 60 points (must include all numerical results, with clear descriptions and discussion).
-
